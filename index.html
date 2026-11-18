@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101510">
+  <title>EMBERFALL — Cronache del Crepuscolo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Emberfall home"><span class="brand-mark">✦</span><span>EMBERFALL<small>CRONACHE DEL CREPUSCOLO</small></span></a>
+      <div class="resource-strip">
+        <div class="resource gold"><span class="coin">◉</span><span><b id="gold">0</b><small>ORO</small></span><button class="plus" data-tab="shop">+</button></div>
+        <div class="resource gems"><span class="gem">◆</span><span><b id="gems">0</b><small>CRISTALLI</small></span><button class="plus" data-tab="shop">+</button></div>
+      </div>
+      <button class="profile" id="settingsBtn" title="Impostazioni"><span class="avatar-mini">✦</span><span>AVVENTURIERO<small>Liv. <b id="topLevel">1</b></small></span><span class="chevron">⌄</span></button>
+    </header>
+    <main class="layout">
+      <aside class="side-rail">
+        <div class="season-card"><div class="season-kicker">STAGIONE I <span>• 12G</span></div><div class="season-title">Il richiamo<br>del crepuscolo</div><div class="season-progress"><span style="width:32%"></span></div><small>Livello pass <b id="passLevel">3</b></small></div>
+        <div class="side-label">IL TUO VIAGGIO</div>
+        <div class="side-region"><span class="region-icon">♧</span><span><small>REGIONE ATTUALE</small><b id="currentRegionSide">Foresta dei Sussurri</b></span></div>
+        <div class="side-quest"><span class="quest-icon">✧</span><div><small>MISSIONE GIORNALIERA</small><b>Abbatti 10 creature</b><div class="quest-progress"><span id="questBar"></span></div><small id="questCount">0 / 10</small></div><span class="quest-reward">+5 <i>◆</i></span></div>
+        <div class="side-spacer"></div>
+        <div class="offline-card" id="offlineCard"><span>◷</span><div><b>Ritorno dall'avventura</b><small id="offlineText">Le tue ricompense ti aspettano</small></div><button id="claimOffline">RISCATTA</button></div>
+        <div class="side-footer"><span class="online-dot"></span> SALVATAGGIO LOCALE ATTIVO</div>
+      </aside>
+      <section class="main-panel">
+        <div class="tab-content" id="view"></div>
+      </section>
+    </main>
+    <nav class="bottom-nav" aria-label="Navigazione principale">
+      <button data-tab="hero"><span>♙</span><small>EROE</small></button>
+      <button data-tab="battle" class="active"><span>⚔</span><small>BATTAGLIA</small></button>
+      <button data-tab="world"><span>⌖</span><small>MONDO</small></button>
+      <button data-tab="forge"><span>⚒</span><small>FORGIA</small></button>
+      <button data-tab="shop"><span>▣</span><small>NEGOZIO</small><i class="nav-dot"></i></button>
+    </nav>
+    <div id="toast" class="toast" role="status"></div>
+    <div id="modalRoot"></div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
