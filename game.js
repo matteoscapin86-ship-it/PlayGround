@@ -4,7 +4,7 @@
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
 const W=1200,H=760,SAVE='ashen-save';
 let modal=null,hit=[],toastTimer=null,anim=0,lastTick=Date.now(),enemyHp=420,enemyMax=420;
-const tabs=[['hero','EROE'],['battle','BATTaglia'],['world','MONDO'],['forge','FORGIA'],['shop','NEGOZIO']];
+const tabs=[['hero','EROE'],['battle','BATTAGLIA'],['world','MONDO'],['forge','FORGIA'],['shop','NEGOZIO']];
 const regions=[
  {name:'Roccaforte Cenerea',set:'Ceneri',color:'#c6a66b',boss:'Custode della Cenere'},
  {name:'Foresta di Ferro',set:'Ruggine',color:'#76965d',boss:'Radice colossale'},
@@ -24,7 +24,7 @@ function fmt(n){return Math.floor(n).toLocaleString('it-IT');}
 function power(){let p=s.atk+s.level*5+s.stage*12;for(const g of s.gear)if(g)p+=g.power*2;return p;}
 function text(t,x,y,size=14,color='#d8dfd3',weight=400,align='left',font='DM Sans'){ctx.save();ctx.font=(weight>=700?'700 ':'')+(weight===500?'500 ':'')+size+'px '+font;ctx.textAlign=align;ctx.textBaseline='top';ctx.fillStyle=color;ctx.fillText(t,x,y);ctx.restore();}
 function line(x1,y1,x2,y2,color='#4a554f',w=1){ctx.strokeStyle=color;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
-function panel(x,y,w,h,fill='#182224',border='#4d5a55',r=8){ctx.fillStyle=fill;ctx.strokeStyle=border;ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();ctx.stroke();}
+function panel(x,y,w,h,fill='#182224',border='#4d5a55',r=8){ctx.fillStyle=fill;ctx.strokeStyle=border;ctx.lineWidth=1;ctx.beginPath();if(typeof ctx.roundRect==='function'){ctx.roundRect(x,y,w,h,r)}else{ctx.rect(x,y,w,h)}ctx.fill();ctx.stroke();}
 function button(x,y,w,h,label,action,style='dark',icon=''){hit.push({x,y,w,h,action});let fill='#263134',border='#59655e';if(style==='gold'){fill='#b7924f';border='#dcc17e'}if(style==='green'){fill='#476356';border='#88a68d'}if(style==='red'){fill='#693f3b';border='#a7665e'}panel(x,y,w,h,fill,border,5);if(icon){text(icon,x+18,y+h/2-10,22,'#f1dcb2',700)}text(label,x+(icon?w/2+8:w/2),y+h/2-9,14,style==='gold'?'#18201c':'#eee7d5',700,'center');}
 function progress(x,y,w,h,p,c='#d3b169'){ctx.fillStyle='#101718';ctx.fillRect(x,y,w,h);ctx.fillStyle=c;ctx.fillRect(x,y,w*Math.max(0,Math.min(1,p)),h);ctx.strokeStyle='#687169';ctx.strokeRect(x,y,w,h);}
 function iconBadge(x,y,r,icon,c='#d0b675'){ctx.fillStyle='#172022';ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.stroke();text(icon,x,y-r*.72,r*.9,c,700,'center');}
@@ -87,7 +87,7 @@ function drawForge(){
  s.inventory.slice(-6).forEach((g,i)=>{const y=250+i*50;iconBadge(85,y+20,18,i===2?'⚔':'◆',rarityColors[g.rarity]);text(g.name,112,y+4,13,'#ddd7c3',700);text(slots[g.slot]+' · +' +g.power+' · '+rarity[g.rarity],112,y+24,10,rarityColors[g.rarity],700);button(500,y-4,52,40,'FONDI',()=>fuseInventory(i),'gold');});
  if(!s.inventory.length)text('Nessun bottino. Combatti per trovare nuovi oggetti.',54,260,12,'#7f8d84',700);
  panel(602,194,566,390,'#182022','#4d5954',8);text('FUSIONE EQUIPAGGIAMENTO',628,217,12,'#9aaa9f',700);
- for(let i=0;i<6;i++){const g=s.gear[i];panel(628+i%3*176,250+Math.floor(i/3)*116,160,98,'#11191a',g?rarityColors[g.rarity]: '#4b5752',6);text(slots[i],708+i%3*176*-1,0,1,'#111',1);text(slots[i].toUpperCase(),708+i%3*176,260+Math.floor(i/3)*116,9,g?rarityColors[g.rarity]: '#718078',700,'center');if(g){iconBadge(708+i%3*176,308+Math.floor(i/3)*116,22,i===2?'⚔':'◆',rarityColors[g.rarity]);text('+'+g.power,708+i%3*176,337+Math.floor(i/3)*116,11,'#e3dac2',700,'center');button(628+i%3*176,250+Math.floor(i/3)*116,160,98,'',()=>openModal('gear',{index:i}))}}
+ for(let i=0;i<6;i++){const g=s.gear[i],x=628+(i%3)*176,y=250+Math.floor(i/3)*116,paddingX=x+80,paddingY=y+58;panel(x,y,160,98,'#11191a',g?rarityColors[g.rarity]: '#4b5752',6);text(slots[i].toUpperCase(),x+80,y+10,9,g?rarityColors[g.rarity]: '#718078',700,'center');if(g){iconBadge(x+80,paddingY-10,22,i===2?'⚔':'◆',rarityColors[g.rarity]);text('+'+g.power,x+80,y+87,11,'#e3dac2',700,'center');button(x,y,160,98,'',()=>openModal('gear',{index:i}))}}
  panel(32,606,1136,56,'#182225','#56615a',6);text('Polvere di fusione',54,616,13,'#ded7c2',700);iconBadge(184,634,14,'✦','#d0b675');text(fmt(s.dust),205,618,12,'#d5c38f',700);button(840,614,304,40,'SMANTELLA INVENTARIO',()=>{const dust=s.inventory.length*3;s.dust+=dust;s.inventory=[];toast('Recuperati '+dust+' polvere');save()},'dark');
 }
 
